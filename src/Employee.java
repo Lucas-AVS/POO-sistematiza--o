@@ -22,5 +22,11 @@ public class Employee extends Person {
         }
     }
 
-public ArrayList<Allergies> getAllergies() {
+    public ArrayList<Allergies> getAllergies() {
         return allergies;
+    }
+
+    public void setAllergies(ArrayList<Allergies> allergies) {
+        this.allergies = allergies;
+    }
+}
