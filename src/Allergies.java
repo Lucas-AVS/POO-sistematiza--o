@@ -1,20 +1,16 @@
 public class Allergies {
-    private String allergy;
+    private String substance;
 
-    public Allergies(String allergy) {
-        this.allergy = allergy;
+    public Allergies(String substance) {
+        this.substance = substance;
     }
 
-    public String getAllergy() {
-        return allergy;
+    public String getSubstance() {
+        return substance;
     }
 
-    public void setAllergy(String allergy) {
-        this.allergy = allergy;
+    public void setSubstance(String substance) {
+        this.substance = substance;
     }
 
-    @Override
-    public String toString() {
-        return allergy;
-    }
 }
