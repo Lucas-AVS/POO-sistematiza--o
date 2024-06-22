@@ -12,5 +12,4 @@ public class Allergies {
     public void setSubstance(String substance) {
         this.substance = substance;
     }
-
 }
