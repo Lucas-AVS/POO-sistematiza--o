@@ -1,32 +1,46 @@
-import java.util.ArrayList;
-
 public class Employee extends Person {
-    private ArrayList<Allergies> allergies;
+    private String allergiesInfo;
 
-    public Employee(int ID, String name, int age, int phone, String email, String bloodType) {
+    public Employee(int ID, String name, int age, int phone, String email, String bloodType, String allergiesInfo) {
         super(ID, name, age, phone, email, bloodType);
-        this.allergies = new ArrayList<>();
+        this.allergiesInfo = allergiesInfo;
     }
 
     public String getAllergiesInfo() {
-        if (allergies.isEmpty()) {
-            return getName() + " has no allergies.";
-        } else {
-            StringBuilder sb = new StringBuilder(getName() + " is allergic to ");
-            for (Allergies allergy : allergies) {
-                sb.append(allergy.getSubstance()).append(", ");
-            }
-            // Remove the last comma and space
-            sb.setLength(sb.length() - 2);
-            return sb.toString();
-        }
+        return allergiesInfo;
     }
 
-    public ArrayList<Allergies> getAllergies() {
-        return allergies;
+    public void setAllergiesInfo(String allergiesInfo) {
+        this.allergiesInfo = allergiesInfo;
     }
 
-    public void setAllergies(ArrayList<Allergies> allergies) {
-        this.allergies = allergies;
+    @Override
+    public int getID() {
+        return super.getID();
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    public int getAge() {
+        return super.getAge();
+    }
+
+    @Override
+    public int getPhone() {
+        return super.getPhone();
+    }
+
+    @Override
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    @Override
+    public String getBloodType() {
+        return super.getBloodType();
     }
 }
