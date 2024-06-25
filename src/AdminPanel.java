@@ -27,6 +27,7 @@ public class AdminPanel extends JPanel {
         JButton createUserButton = new JButton("Create User");
         JButton deleteUserButton = new JButton("Delete User");
         JButton modifyUserButton = new JButton("Modify User");
+        JButton backButton = new JButton("Back"); // Botão Back
 
         centerPanel.add(createUserButton);
         centerPanel.add(deleteUserButton);
@@ -48,5 +49,14 @@ public class AdminPanel extends JPanel {
             CardLayout cl = (CardLayout) parentPanel.getLayout();
             cl.show(parentPanel, "modifyUser");
         });
+
+        backButton.addActionListener(e -> {
+            CardLayout cl = (CardLayout) parentPanel.getLayout();
+            cl.show(parentPanel, "employeeLogin"); // Mudando para o painel de login de empregado
+        });
+
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.add(backButton); // Adicionando o botão Back
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 }
