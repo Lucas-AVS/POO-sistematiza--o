@@ -1,41 +1,59 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.sql.Connection;
 
 public class EmployeeInfoPanel extends JPanel {
-    public EmployeeInfoPanel(Employee employee, JPanel mainPanel) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(new EmptyBorder(10, 10, 10, 10));
+    private JPanel parentPanel;
+    private DatabaseHelper db;
+    private Connection conn;
+    private String employeeName;
 
-        JLabel infoLabel = new JLabel("Employee Information");
-        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        infoLabel.setFont(new Font("Arial", Font.BOLD, 16));
+    public EmployeeInfoPanel(JPanel parentPanel, DatabaseHelper db, Connection conn, String employeeName) {
+        this.parentPanel = parentPanel;
+        this.db = db;
+        this.conn = conn;
+        this.employeeName = employeeName;
 
-        add(infoLabel);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Name: " + employee.getName()));
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Age: " + employee.getAge()));
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Phone: " + employee.getPhone()));
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Email: " + employee.getEmail()));
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Blood Type: " + employee.getBloodType()));
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Allergies: " + employee.getAllergiesInfo()));
+        initComponents();
+    }
+
+    private void initComponents() {
+        setLayout(new BorderLayout());
+
+        JLabel label = new JLabel("Employee Information for: " + employeeName);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        add(label, BorderLayout.NORTH);
+
+        JPanel infoPanel = new JPanel(new GridLayout(6, 2, 10, 10));
+
+        // Fetch employee details from the database and populate the fields
+        Employee employee = db.getEmployeeByName(conn, employeeName);
+
+        if (employee != null) {
+            infoPanel.add(new JLabel("Name:"));
+            infoPanel.add(new JLabel(employee.getName()));
+            infoPanel.add(new JLabel("Age:"));
+            infoPanel.add(new JLabel(String.valueOf(employee.getAge())));
+            infoPanel.add(new JLabel("Phone:"));
+            infoPanel.add(new JLabel(String.valueOf(employee.getPhone())));
+            infoPanel.add(new JLabel("Email:"));
+            infoPanel.add(new JLabel(employee.getEmail()));
+            infoPanel.add(new JLabel("Blood Type:"));
+            infoPanel.add(new JLabel(employee.getBloodType()));
+            infoPanel.add(new JLabel("Allergies:"));
+            infoPanel.add(new JLabel(employee.getAllergiesInfo()));
+        } else {
+            infoPanel.add(new JLabel("No information available for this employee."));
+        }
+
+        add(infoPanel, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back");
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backButton.setBackground(new Color(70, 130, 180));
-        backButton.setForeground(Color.WHITE);
-        backButton.setFocusPainted(false);
         backButton.addActionListener(e -> {
-            CardLayout cl = (CardLayout) (mainPanel.getLayout());
-            cl.show(mainPanel, "login");
+            CardLayout cl = (CardLayout) parentPanel.getLayout();
+            cl.show(parentPanel, "employeeLogin");
         });
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
-        add(backButton);
+        add(backButton, BorderLayout.SOUTH);
     }
 }
