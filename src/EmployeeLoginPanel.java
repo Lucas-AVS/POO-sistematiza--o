@@ -53,11 +53,26 @@ public class EmployeeLoginPanel extends JPanel {
             }
         });
 
+        JButton adminLoginButton = new JButton("Admin Login");
+        adminLoginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        adminLoginButton.setBackground(new Color(70, 130, 180));
+        adminLoginButton.setForeground(Color.WHITE);
+        adminLoginButton.setFocusPainted(false);
+        adminLoginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) mainPanel.getLayout();
+                cl.show(mainPanel, "admin");
+            }
+        });
+
         add(loginLabel);
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(new JLabel("Name:"));
         add(nameField);
         add(Box.createRigidArea(new Dimension(0, 20)));
         add(loginButton);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(adminLoginButton); // Adicionando o botão Admin Login
     }
 }
