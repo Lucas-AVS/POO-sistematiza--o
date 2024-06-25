@@ -1,13 +1,27 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class CreateUserPanel extends JPanel {
-    public CreateUserPanel(JPanel mainPanel) {
+    private JPanel parentPanel;
+    private DatabaseHelper db;
+    private Connection conn;
+    private JPanel mainPanel;
+
+    public CreateUserPanel(JPanel parentPanel, DatabaseHelper db, Connection conn, JPanel mainPanel) {
+        this.parentPanel = parentPanel;
+        this.db = db;
+        this.conn = conn;
+        this.mainPanel = mainPanel;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JLabel createLabel = new JLabel("Create New User");
+        JLabel createLabel = new JLabel("Create User");
         createLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         createLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
@@ -40,20 +54,27 @@ public class CreateUserPanel extends JPanel {
         submitButton.setBackground(new Color(70, 130, 180));
         submitButton.setForeground(Color.WHITE);
         submitButton.setFocusPainted(false);
-        submitButton.addActionListener(e -> {
-            String name = nameField.getText();
-            int age = Integer.parseInt(ageField.getText());
-            int phone = Integer.parseInt(phoneField.getText());
-            String email = emailField.getText();
-            String bloodType = bloodTypeField.getText();
-            String allergies = allergiesField.getText();
-
-            // Implement logic to save new user to the database
-            // DatabaseHelper.createUser(new Employee(0, name, age, phone, email, bloodType,
-            // allergies));
-
-            CardLayout cl = (CardLayout) (mainPanel.getLayout());
-            cl.show(mainPanel, "admin");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String name = nameField.getText();
+                    int age = Integer.parseInt(ageField.getText());
+                    int phone = Integer.parseInt(phoneField.getText());
+                    String email = emailField.getText();
+                    String bloodType = bloodTypeField.getText();
+                    String allergies = allergiesField.getText();
+                    Employee newEmployee = new Employee(0, name, age, phone, email, bloodType, allergies);
+                    db.createUser(conn, newEmployee);
+                    JOptionPane.showMessageDialog(CreateUserPanel.this, "User created successfully");
+                    CardLayout cl = (CardLayout) (mainPanel.getLayout());
+                    cl.show(mainPanel, "admin");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(CreateUserPanel.this, "Invalid input: Age and Phone must be numbers");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(CreateUserPanel.this, "Error creating user: " + ex.getMessage());
+                }
+            }
         });
 
         add(createLabel);
