@@ -26,15 +26,14 @@ public class Main {
             JPanel deleteUserPanel = new DeleteUserPanel(mainPanel, db, conn, mainPanel);
             JPanel employeeLoginPanel = new EmployeeLoginPanel(mainPanel, db, conn, mainPanel);
 
-            mainPanel.add(deleteUserPanel, "deleteUser");
-            mainPanel.add(adminPanel, "admin");
             mainPanel.add(employeeLoginPanel, "employeeLogin");
-            mainPanel.add(modifyUserPanel, "modifyUser");
             mainPanel.add(createUserPanel, "createUser");
+            mainPanel.add(adminPanel, "admin");
+            mainPanel.add(modifyUserPanel, "modifyUser");
+            mainPanel.add(deleteUserPanel, "deleteUser");
 
             frame.add(mainPanel);
             frame.setVisible(true);
-
         });
     }
 }

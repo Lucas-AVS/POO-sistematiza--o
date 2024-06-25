@@ -54,10 +54,22 @@ public class DeleteUserPanel extends JPanel {
             }
         });
 
+        JButton backButton = new JButton("Back");
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) (mainPanel.getLayout());
+                cl.show(mainPanel, "admin");
+            }
+        });
+
         add(deleteLabel);
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(userComboBox);
         add(Box.createRigidArea(new Dimension(0, 20)));
         add(deleteButton);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(backButton);
     }
 }
