@@ -54,17 +54,52 @@ public class DatabaseHelper {
     // }
     // }
 
-    public void modifyUser(Connection conn, Employee employee) throws SQLException {
-        String sql = "UPDATE employees SET name = ?, age = ?, phone = ?, email = ?, bloodType = ?, allergiesinfo = ? WHERE id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, employee.getName());
-            pstmt.setInt(2, employee.getAge());
-            pstmt.setInt(3, employee.getPhone());
-            pstmt.setString(4, employee.getEmail());
-            pstmt.setString(5, employee.getBloodType());
-            pstmt.setString(6, employee.getAllergiesInfo());
-            pstmt.setInt(7, employee.getId());
-            pstmt.executeUpdate();
+    public void modifyUserAttribute(Connection conn, String name, String attribute, String newValue)
+            throws SQLException {
+        String query;
+        switch (attribute.toLowerCase()) {
+            case "age":
+                query = "UPDATE employees SET age=? WHERE name=?";
+                try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+                    pstmt.setInt(1, Integer.parseInt(newValue));
+                    pstmt.setString(2, name);
+                    pstmt.executeUpdate();
+                }
+                break;
+            case "phone":
+                query = "UPDATE employees SET phone=? WHERE name=?";
+                try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+                    pstmt.setInt(1, Integer.parseInt(newValue));
+                    pstmt.setString(2, name);
+                    pstmt.executeUpdate();
+                }
+                break;
+            case "email":
+                query = "UPDATE employees SET email=? WHERE name=?";
+                try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+                    pstmt.setString(1, newValue);
+                    pstmt.setString(2, name);
+                    pstmt.executeUpdate();
+                }
+                break;
+            case "blood type":
+                query = "UPDATE employees SET bloodtype=? WHERE name=?";
+                try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+                    pstmt.setString(1, newValue);
+                    pstmt.setString(2, name);
+                    pstmt.executeUpdate();
+                }
+                break;
+            case "allergies":
+                query = "UPDATE employees SET allergiesinfo=? WHERE name=?";
+                try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+                    pstmt.setString(1, newValue);
+                    pstmt.setString(2, name);
+                    pstmt.executeUpdate();
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid attribute: " + attribute);
         }
     }
 
