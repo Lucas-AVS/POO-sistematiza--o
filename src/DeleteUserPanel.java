@@ -1,9 +1,23 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DeleteUserPanel extends JPanel {
-    public DeleteUserPanel(JPanel mainPanel) {
+    private JPanel parentPanel;
+    private DatabaseHelper db;
+    private Connection conn;
+    private JPanel mainPanel;
+
+    public DeleteUserPanel(JPanel parentPanel, DatabaseHelper db, Connection conn, JPanel mainPanel) {
+        this.parentPanel = parentPanel;
+        this.db = db;
+        this.conn = conn;
+        this.mainPanel = mainPanel;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -11,43 +25,39 @@ public class DeleteUserPanel extends JPanel {
         deleteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         deleteLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        JTextField nameField = new JTextField();
-        nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        nameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JComboBox<String> userComboBox = new JComboBox<>();
+        userComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        userComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        try {
+            db.readEmployees(conn, userComboBox);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error reading users: " + e.getMessage());
+        }
 
-        JPasswordField passwordField = new JPasswordField();
-        passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JButton submitButton = new JButton("Submit");
-        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        submitButton.setBackground(new Color(70, 130, 180));
-        submitButton.setForeground(Color.WHITE);
-        submitButton.setFocusPainted(false);
-        submitButton.addActionListener(e -> {
-            String name = nameField.getText();
-            String password = new String(passwordField.getPassword());
-            if (password.equals("admin")) {
-                // Implement logic to delete user from the database
-                // DatabaseHelper.deleteUserByName(name);
-
-                CardLayout cl = (CardLayout) (mainPanel.getLayout());
-                cl.show(mainPanel, "admin");
-            } else {
-                mainPanel.add(new AdminLoginFailedPanel(mainPanel), "adminLoginFailed");
-                CardLayout cl = (CardLayout) (mainPanel.getLayout());
-                cl.show(mainPanel, "adminLoginFailed");
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteButton.setBackground(new Color(70, 130, 180));
+        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setFocusPainted(false);
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String selectedUser = (String) userComboBox.getSelectedItem();
+                    db.deleteEmployeeByName(conn, selectedUser);
+                    JOptionPane.showMessageDialog(DeleteUserPanel.this, "User deleted successfully");
+                    CardLayout cl = (CardLayout) (mainPanel.getLayout());
+                    cl.show(mainPanel, "admin");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(DeleteUserPanel.this, "Error deleting user: " + ex.getMessage());
+                }
             }
         });
 
         add(deleteLabel);
         add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Name:"));
-        add(nameField);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Admin Password:"));
-        add(passwordField);
+        add(userComboBox);
         add(Box.createRigidArea(new Dimension(0, 20)));
-        add(submitButton);
+        add(deleteButton);
     }
 }
