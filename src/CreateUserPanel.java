@@ -12,6 +12,13 @@ public class CreateUserPanel extends JPanel {
     private Connection conn;
     private JPanel mainPanel;
 
+    private JTextField nameField;
+    private JTextField ageField;
+    private JTextField phoneField;
+    private JTextField emailField;
+    private JTextField bloodTypeField;
+    private JTextField allergiesField;
+
     public CreateUserPanel(JPanel parentPanel, DatabaseHelper db, Connection conn, JPanel mainPanel) {
         this.parentPanel = parentPanel;
         this.db = db;
@@ -25,27 +32,27 @@ public class CreateUserPanel extends JPanel {
         createLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         createLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        JTextField nameField = new JTextField();
+        nameField = new JTextField();
         nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         nameField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextField ageField = new JTextField();
+        ageField = new JTextField();
         ageField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         ageField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextField phoneField = new JTextField();
+        phoneField = new JTextField();
         phoneField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         phoneField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextField emailField = new JTextField();
+        emailField = new JTextField();
         emailField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         emailField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextField bloodTypeField = new JTextField();
+        bloodTypeField = new JTextField();
         bloodTypeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         bloodTypeField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextField allergiesField = new JTextField();
+        allergiesField = new JTextField();
         allergiesField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         allergiesField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -67,6 +74,7 @@ public class CreateUserPanel extends JPanel {
                     Employee newEmployee = new Employee(0, name, age, phone, email, bloodType, allergies);
                     db.createUser(conn, newEmployee);
                     JOptionPane.showMessageDialog(CreateUserPanel.this, "User created successfully");
+                    resetFields(); // Resetar os campos após a criação bem-sucedida
                     CardLayout cl = (CardLayout) (mainPanel.getLayout());
                     cl.show(mainPanel, "admin");
                 } catch (NumberFormatException ex) {
@@ -74,6 +82,16 @@ public class CreateUserPanel extends JPanel {
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(CreateUserPanel.this, "Error creating user: " + ex.getMessage());
                 }
+            }
+        });
+
+        JButton backButton = new JButton("Back");
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) (mainPanel.getLayout());
+                cl.show(mainPanel, "admin");
             }
         });
 
@@ -98,5 +116,16 @@ public class CreateUserPanel extends JPanel {
         add(allergiesField);
         add(Box.createRigidArea(new Dimension(0, 20)));
         add(submitButton);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(backButton);
+    }
+
+    private void resetFields() {
+        nameField.setText("");
+        ageField.setText("");
+        phoneField.setText("");
+        emailField.setText("");
+        bloodTypeField.setText("");
+        allergiesField.setText("");
     }
 }
