@@ -1,9 +1,23 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ModifyUserPanel extends JPanel {
-    public ModifyUserPanel(JPanel mainPanel) {
+    private JPanel parentPanel;
+    private DatabaseHelper db;
+    private Connection conn;
+    private JPanel mainPanel;
+
+    public ModifyUserPanel(JPanel parentPanel, DatabaseHelper db, Connection conn, JPanel mainPanel) {
+        this.parentPanel = parentPanel;
+        this.db = db;
+        this.conn = conn;
+        this.mainPanel = mainPanel;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -35,34 +49,31 @@ public class ModifyUserPanel extends JPanel {
         allergiesField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         allergiesField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPasswordField passwordField = new JPasswordField();
-        passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         JButton submitButton = new JButton("Submit");
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         submitButton.setBackground(new Color(70, 130, 180));
         submitButton.setForeground(Color.WHITE);
         submitButton.setFocusPainted(false);
-        submitButton.addActionListener(e -> {
-            String name = nameField.getText();
-            int age = Integer.parseInt(ageField.getText());
-            int phone = Integer.parseInt(phoneField.getText());
-            String email = emailField.getText();
-            String bloodType = bloodTypeField.getText();
-            String allergies = allergiesField.getText();
-            String password = new String(passwordField.getPassword());
-            if (password.equals("admin")) {
-                // Implement logic to modify user in the database
-                // DatabaseHelper.modifyUser(new Employee(0, name, age, phone, email, bloodType,
-                // allergies));
-
-                CardLayout cl = (CardLayout) (mainPanel.getLayout());
-                cl.show(mainPanel, "admin");
-            } else {
-                mainPanel.add(new AdminLoginFailedPanel(mainPanel), "adminLoginFailed");
-                CardLayout cl = (CardLayout) (mainPanel.getLayout());
-                cl.show(mainPanel, "adminLoginFailed");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String name = nameField.getText();
+                    int age = Integer.parseInt(ageField.getText());
+                    int phone = Integer.parseInt(phoneField.getText());
+                    String email = emailField.getText();
+                    String bloodType = bloodTypeField.getText();
+                    String allergies = allergiesField.getText();
+                    Employee updatedEmployee = new Employee(0, name, age, phone, email, bloodType, allergies);
+                    db.modifyUser(conn, updatedEmployee);
+                    JOptionPane.showMessageDialog(ModifyUserPanel.this, "User modified successfully");
+                    CardLayout cl = (CardLayout) (mainPanel.getLayout());
+                    cl.show(mainPanel, "admin");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(ModifyUserPanel.this, "Invalid input: Age and Phone must be numbers");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(ModifyUserPanel.this, "Error modifying user: " + ex.getMessage());
+                }
             }
         });
 
@@ -85,9 +96,6 @@ public class ModifyUserPanel extends JPanel {
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(new JLabel("Allergies:"));
         add(allergiesField);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Admin Password:"));
-        add(passwordField);
         add(Box.createRigidArea(new Dimension(0, 20)));
         add(submitButton);
     }
