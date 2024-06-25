@@ -1,49 +1,56 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 public class AdminLoginPanel extends JPanel {
-    public AdminLoginPanel(JPanel mainPanel) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(new EmptyBorder(10, 10, 10, 10));
+    private JPanel parentPanel;
+    private DatabaseHelper db;
+    private Connection conn;
 
-        JLabel adminLabel = new JLabel("Admin Login");
-        adminLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        adminLabel.setFont(new Font("Arial", Font.BOLD, 16));
+    public AdminLoginPanel(JPanel parentPanel, DatabaseHelper db, Connection conn) {
+        this.parentPanel = parentPanel;
+        this.db = db;
+        this.conn = conn;
 
-        JTextField passwordField = new JPasswordField();
-        passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        initComponents();
+    }
 
-        JButton submitButton = new JButton("Submit");
-        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        submitButton.setBackground(new Color(70, 130, 180));
-        submitButton.setForeground(Color.WHITE);
-        submitButton.setFocusPainted(false);
+    private void initComponents() {
+        setLayout(new BorderLayout());
 
-        submitButton.addActionListener(new ActionListener() {
+        JLabel label = new JLabel("Admin Login");
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        add(label, BorderLayout.NORTH);
+
+        JPanel centerPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+
+        JTextField usernameField = new JTextField(20);
+        JPasswordField passwordField = new JPasswordField(20);
+        JButton loginButton = new JButton("Login");
+
+        centerPanel.add(new JLabel("Username:"));
+        centerPanel.add(usernameField);
+        centerPanel.add(new JLabel("Password:"));
+        centerPanel.add(passwordField);
+        centerPanel.add(loginButton);
+
+        add(centerPanel, BorderLayout.CENTER);
+
+        loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String password = passwordField.getText();
-                if (password.equals("admin")) {
-                    CardLayout cl = (CardLayout) (mainPanel.getLayout());
-                    cl.show(mainPanel, "admin");
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+
+                if (username.equals("admin") && password.equals("password")) {
+                    CardLayout cardLayout = (CardLayout) parentPanel.getLayout();
+                    cardLayout.show(parentPanel, "admin");
                 } else {
-                    mainPanel.add(new AdminLoginFailedPanel(mainPanel), "adminLoginFailed");
-                    CardLayout cl = (CardLayout) (mainPanel.getLayout());
-                    cl.show(mainPanel, "adminLoginFailed");
+                    JOptionPane.showMessageDialog(AdminLoginPanel.this, "Invalid username or password");
                 }
             }
         });
-
-        add(adminLabel);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(new JLabel("Password:"));
-        add(Box.createRigidArea(new Dimension(0, 5)));
-        add(passwordField);
-        add(Box.createRigidArea(new Dimension(0, 20)));
-        add(submitButton);
     }
 }
