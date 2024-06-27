@@ -26,7 +26,6 @@ This system manages employee information, allowing for insertion, retrieval, mod
 
 - Java 8 or higher
 - PostgreSQL
-- IDE (IntelliJ, Eclipse, NetBeans, etc.)
 
 ## Database Setup
 
