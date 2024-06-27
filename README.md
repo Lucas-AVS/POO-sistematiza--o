@@ -1,18 +1,47 @@
-## Getting Started
+# Employee Management System
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+## Description
 
-## Folder Structure
+This system manages employee information, allowing for insertion, retrieval, modification, and deletion of employee data. It uses a Swing-based graphical interface and PostgreSQL for data persistence.
 
-The workspace contains two folders by default, where:
+## Features
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+- **Database Connection**: Connects to a PostgreSQL database.
+- **CRUD Operations**: Create, read, update, and delete employee records.
+- **Login Interfaces**: Separate login for employees and administrators.
+- **Employee List**: Displays employee names in a JComboBox.
+- **GUI**: User interface built with Swing.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+## Project Structure
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+- **DatabaseHelper**: Handles database operations.
+- **Employee**: Represents the employee entity.
+- **EmployeeLogin**: Employee login interface.
+- **AdminLogin**: Administrator login interface.
+- **AdminPanel**: Admin management panel.
+- **CreateUserPanel**: Panel for creating new employees.
+- **ModifyUserPanel**: Panel for modifying employee data.
 
-## Dependency Management
+## Prerequisites
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+- Java 8 or higher
+- PostgreSQL
+- IDE (IntelliJ, Eclipse, NetBeans, etc.)
+
+## Database Setup
+
+1. Install PostgreSQL.
+2. Create a database named `employee_db`.
+3. Create the `employees` table:
+
+```sql
+CREATE TABLE employees (
+    empid SERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    age INT NOT NULL,
+    phone VARCHAR(15),
+    email VARCHAR(200),
+    bloodType VARCHAR(3) NOT NULL,
+    allergiesInfo VARCHAR(255) DEFAULT 'no allergies'
+);
+```
